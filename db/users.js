@@ -21,10 +21,22 @@ async function createUser({ username, email, password }) {
   }
 }
 
+async function getAllUsers() {
+  try {
+    const {rows} = await client.query(`
+        SELECT * 
+        FROM users;
+    `)
+    return rows;
+  } catch(error) {
+    throw error;
+  }
+}
+
 async function getUser({ username, email, password }) {
   try {
-    const user = await getUserByUsername(username);
-    // const email = await getUserByEmail(email)
+    // const user = await getUserByUsername(username);
+    const user = await getUserByEmail(email)
     const hashedPassword = user.password;
     const passwordsMatch = await bcrypt.compare(password, hashedPassword);
     if (passwordsMatch) {
@@ -74,14 +86,14 @@ async function getUserByUsername(username) {
 async function getUserByEmail(email) {
   try {
     const {
-      rows: [email],
+      rows
     } = await client.query(`  
             SELECT * FROM users
             WHERE email=$1;`,
       [email]
     );
 
-    return user;
+    return rows;
   } catch (error) {
     throw error;
   }
@@ -89,6 +101,7 @@ async function getUserByEmail(email) {
 
 module.exports = {
   createUser,
+  getAllUsers,
   getUser,
   getUserById,
   getUserByUsername,

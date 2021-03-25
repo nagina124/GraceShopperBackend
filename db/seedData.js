@@ -1,13 +1,15 @@
 const client = require('./client')
-
+const {createUser, createProduct, getAllUsers} = require("./index");
+const { addProductToOrder } = require('./orders');
+const { getAllProducts } = require('./products');
 async function dropTables() {
     console.log("dropping tables");
     try {
         await client.query(`
-            DROP TABLE IF EXISTS reviews,
-            DROP TABLE IF EXISTS orders, 
-            DROP TABLE IF EXISTS products,
-            DROP TABLE IF EXISTS users
+            DROP TABLE IF EXISTS reviews;
+            DROP TABLE IF EXISTS orders;
+            DROP TABLE IF EXISTS products;
+            DROP TABLE IF EXISTS users;
         `)
         console.log("finished dropping tables")
     } catch (error) {
@@ -39,6 +41,7 @@ async function createTables() {
             id SERIAL PRIMARY KEY,
             "userId" INTEGER REFERENCES users(id),
             "productId" INTEGER REFERENCES products(id),
+            "productTitle" VARCHAR(255) REFERENCES products(title),
             count INTEGER NOT NULL, 
             UNIQUE ("userId", "productId")
         );
@@ -91,7 +94,7 @@ async function createInitialProducts() {
             { category: 'Horror', title: 'Resident Evil Village', description: 'run from monsters' , price: 59.99, inventory: 20 },
         ]
 
-        const products = await Promise.all(productsToCreate.map(createProducts));
+        const products = await Promise.all(productsToCreate.map(createProduct));
 
         console.log('products created:');
         console.log(products);
@@ -105,30 +108,73 @@ async function createInitialProducts() {
 }
 
 
-// async function createInitialOrders() {
-//     try {
-//         console.log("starting to create orders")
-//         const ordersToCreate = [
-//             {
-//                 userId
-
-//             }
-//         ]
-
-//     } catch (error) {
-//         console.log("error creating orders")
-//         throw error;
-//     }
-// }
-
-async function createInitialReviews() {
+async function createInitialOrders() {
     try {
+        console.log("starting to create orders")
+        const [
+            cloud,
+            zelda,
+            mario
+        ] = await getAllUsers();
+        const [
+                finalFantasyVII,
+                lastOfUsPartII,
+                theWitcherIII,
+                streetFighterV,
+                residentEvilVillage
+        ] = await getAllProducts();
+        
+        const ordersToCreate = [
+            {
+                userId: cloud.id,
+                productId: finalFantasyVII.id,
+                productTitle: finalFantasyVII.title,
+                count: 2
+            },
+            {
+                userId: zelda.id,
+                productId: lastOfUsPartII.id,
+                productTitle: lastOfUsPartII.title,
+                count: 1
+            },
+            {
+                userId: mario.id,
+                productId: theWitcherIII.id,
+                productTitle: theWitcherIII.title,
+                count: 3
+            },
+            {
+                userId: mario.id,
+                productId: streetFighterV.id,
+                productTitle: streetFighterV.title,
+                count: 1
+            },
+            {
+                userId: cloud.id,
+                productId: residentEvilVillage.id,
+                productTitle: residentEvilVillage.title,
+                count: 2
+            }
+        ];
+
+        const ordersCreated = await Promise.all(ordersToCreate.map(addProductToOrder))
+        console.log("orders created: ", ordersCreated);
+        console.log("Finished creating orders!");
 
     } catch (error) {
-        console.log("error creating reviews")
+        console.log("error creating orders")
         throw error;
     }
 }
+
+// async function createInitialReviews() {
+//     try {
+
+//     } catch (error) {
+//         console.log("error creating reviews")
+//         throw error;
+//     }
+// }
 
 
 async function rebuildDB() {
@@ -138,8 +184,8 @@ async function rebuildDB() {
       await createTables();
       await createInitialUsers();
       await createInitialProducts();
-    //   await createInitialOrders();
-      await createInitialReviews();
+      await createInitialOrders();
+    //   await createInitialReviews();
     } catch (error) {
       console.log('Error during rebuildDB')
       throw error;

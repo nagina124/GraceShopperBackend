@@ -43,13 +43,13 @@ async function updateOrder ({ id, title, price, count }) {
     return order
 }
 
-async function addProductToOrder ({ userId, productId, title, price, count }) {
+async function addProductToOrder ({ userId, productId, productTitle, count }) {
     try {
         const {rows: [order] } = await client.query(`
-            INSERT INTO orders("userId", "productId", title, price, count)
-            VALUES($1, $2, $3, $4, $5)
+            INSERT INTO orders("userId", "productId", "productTitle", count)
+            VALUES($1, $2, $3, $4)
             RETURNING *;
-        `, [userId, productId, title, price, count])
+        `, [userId, productId, productTitle, count])
         return order;
     } catch (error) {
         throw error;

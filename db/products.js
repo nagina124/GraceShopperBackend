@@ -11,6 +11,7 @@ async function getProductById(id) {
       throw error
   }
 };
+
 async function getAllProducts() {
   try {
     const {rows} = await client.query(`
@@ -77,7 +78,7 @@ async function updateProduct({ id, category, title, description, price, inventor
   }
 }
 
-async function deleteProducts(id) {
+async function deleteProduct(id) {
   try {
     const {rows: [product]} = await client.query(`
       DELETE FROM products
@@ -96,5 +97,5 @@ module.exports = {
   createProduct,
   getProductsByCategory,
   updateProduct,
-  deleteProducts
+  deleteProduct
 }

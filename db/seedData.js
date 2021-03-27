@@ -25,7 +25,8 @@ async function createTables() {
             id SERIAL PRIMARY KEY,
             email VARCHAR(255) UNIQUE NOT NULL,
             username VARCHAR(255) UNIQUE NOT NULL,
-            password VARCHAR(255) NOT NULL
+            password VARCHAR(255) NOT NULL,
+            "isAdmin" BOOLEAN DEFAULT FALSE
         );
         
         CREATE TABLE products (
@@ -43,6 +44,7 @@ async function createTables() {
             "productId" INTEGER REFERENCES products(id),
             "productTitle" VARCHAR(255) REFERENCES products(title),
             count INTEGER NOT NULL, 
+            "orderComplete" BOOLEAN DEFAULT FALSE,
             UNIQUE ("userId", "productId")
         );
         

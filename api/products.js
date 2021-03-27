@@ -7,6 +7,7 @@ const {
   deleteProduct
 } = require('../db/products');
 const productsRouter = express.Router();
+const {requireAdmin} = require('./utils')
 
 productsRouter.get('/', async (req, res, next) => {
   try {
@@ -47,7 +48,7 @@ productsRouter.post('/', requireAdmin, async (req, res, next) => {
   }
 })
 
-productsRouter.patch('/:productId', requireUser, async (req, res, next) => {
+productsRouter.patch('/:productId', requireAdmin, async (req, res, next) => {
   const { id } = req.admin; // **
   const { productId } = req.params;
   const { category, title, description, price, inventory } = req.body;
@@ -66,7 +67,7 @@ productsRouter.patch('/:productId', requireUser, async (req, res, next) => {
   }
 })
 
-productsRouter.delete('/:productId', requireUser, async (req, res, next) => {
+productsRouter.delete('/:productId', requireAdmin, async (req, res, next) => {
   const { id } = req.admin; //**
   const { productId } = req.params;
   try {

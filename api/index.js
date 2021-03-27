@@ -41,14 +41,14 @@ apiRouter.use((req, res, next) => {
 const usersRouter = require('./users');
 apiRouter.use('/users', usersRouter);
 
-// const productsRouter = require('./products');
-// apiRouter.use('/products', productsRouter);
+const productsRouter = require('./products');
+apiRouter.use('/products', productsRouter);
 
-// const ordersRouter = require('./orders');
-// apiRouter.use('/orders', ordersRouter);
+const ordersRouter = require('./orders');
+apiRouter.use('/orders', ordersRouter);
 
-// const reviewsRouter = require('./reviews');
-// apiRouter.use('/reviews', reviewsRouter);
+const reviewsRouter = require('./reviews');
+apiRouter.use('/reviews', reviewsRouter);
 
 apiRouter.use((error, req, res, next) => {
     res.send(error);

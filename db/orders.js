@@ -1,6 +1,20 @@
 const client = require('./client');
 
 
+async function createOrder ({productId, productTitle, count}) {
+    try {
+        const {rows: [order]} = await client.query(`
+            INSERT into orders("productId", "productTitle", count)
+            VALUES($1, $2, $3)
+            RETURNING *;
+        `, [productId, productTitle, count])
+        return order;
+    } catch (error) {
+        throw (error) 
+    }
+}
+
+
 async function deleteProductFromOrder (id) {
     try {
         const { rows } = await client.query(`
@@ -33,23 +47,36 @@ async function deleteOrder (id) {
     }
 }
 
-async function updateOrder ({ id, title, price, count }) {
-    const {rows: [order] } = await client.query(`
-        UPDATE orders
-        SET title=$2, price=$3, count=$4
-        WHERE id=$1
-        RETURNING *;
-    `, [id, title, price, count])
-    return order
-}
+// async function updateOrder ({ id, title, price, count }) {
+//     const {rows: [order] } = await client.query(`
+//         UPDATE orders
+//         SET title=$2, price=$3, count=$4
+//         WHERE id=$1
+//         RETURNING *;
+//     `, [id, title, price, count])
+//     return order
+// }
 
-async function addProductToOrder ({ userId, productId, productTitle, count }) {
+async function addProductToOrder ({ orderId, productId, productTitle, count }) {
     try {
         const {rows: [order] } = await client.query(`
-            INSERT INTO orders("userId", "productId", "productTitle", count)
+            INSERT INTO orders("orderId", "productId", "productTitle", count)
             VALUES($1, $2, $3, $4)
             RETURNING *;
-        `, [userId, productId, productTitle, count])
+        `, [orderId, productId, productTitle, count])
+        return order;
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function getOrderById (id) {
+    try {
+        const {rows: [order]} = await client.query(`
+            SELECT * 
+            FROM orders 
+            WHERE id=$1;
+        `, [id])
         return order;
     } catch (error) {
         throw error;
@@ -57,9 +84,38 @@ async function addProductToOrder ({ userId, productId, productTitle, count }) {
 }
 
 
+async function increaseCountOfProduct (productTitle) {
+    try {
+        const { rows: [product] } = await client.query(`
+            SELECT *
+            FROM orders 
+            WHERE "productTitle"=$1;
+        `, [productTitle])
+
+        const newCount = product.count + 1 
+
+         
+        const { rows: [order] } = await client.query(`
+            UPDATE orders 
+            SET count= $2
+            WHERE "productTitle"=$1
+            RETURNING*;
+        `, [productTitle, newCount])
+
+      return order;
+
+    } catch (error) {
+        throw (error)
+    }
+}
+
+
 module.exports = {
+    createOrder,
     deleteProductFromOrder,
     deleteOrder,
-    updateOrder,
-    addProductToOrder
+    // updateOrder,
+    addProductToOrder,
+    getOrderById, 
+    increaseCountOfProduct
 }

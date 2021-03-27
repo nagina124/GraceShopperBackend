@@ -1,4 +1,5 @@
 const client = require('./client');
+const { getProductById } = require('./products')
 
 
 async function createOrder ({productId, productTitle, count}) {
@@ -8,6 +9,7 @@ async function createOrder ({productId, productTitle, count}) {
             VALUES($1, $2, $3)
             RETURNING *;
         `, [productId, productTitle, count])
+        order.products = []
         return order;
     } catch (error) {
         throw (error) 
@@ -57,13 +59,22 @@ async function deleteOrder (id) {
 //     return order
 // }
 
-async function addProductToOrder ({ orderId, productId, productTitle, count }) {
+//need to figure out how to address userId and guest checkout
+//figure out how to make orders into an array 
+async function addProductToOrder ({ userId, productId, productTitle, count }) {
+    console.log(productId, "line 64")
+    const product = await getProductById(productId)
+    console.log(product, "line 65")
     try {
         const {rows: [order] } = await client.query(`
-            INSERT INTO orders("orderId", "productId", "productTitle", count)
+            INSERT INTO orders( "userId", "productId", "productTitle", count)
             VALUES($1, $2, $3, $4)
             RETURNING *;
-        `, [orderId, productId, productTitle, count])
+        `, [userId, productId, productTitle, count])
+
+        // console.log(order.products, "line 76")
+        // order.products.push(product)
+
         return order;
     } catch (error) {
         throw error;

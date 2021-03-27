@@ -70,9 +70,11 @@ async function createInitialUsers() {
     try {
   
       const usersToCreate = [
-        { username: 'cloud', password: 'blondehair', email: 'cloud@graceshopper.com' },
-        { username: 'zelda', password: 'link', email: 'zelda@graceshopper.com' },
-        { username: 'mario', password: 'luigi', email: 'mario@graceshopper.com' },
+        { username: 'cloud', password: 'blondehair', email: 'cloud@graceshopper.com', isAdmin: false },
+        { username: 'zelda', password: 'link', email: 'zelda@graceshopper.com', isAdmin: false },
+        { username: 'mario', password: 'luigi', email: 'mario@graceshopper.com', isAdmin: false },
+        { username: 'isabelle', password: 'adminlyfe', email: 'admin@graceshopper.com', isAdmin: true }
+
       ]
       const users = await Promise.all(usersToCreate.map(createUser));
   
@@ -177,6 +179,8 @@ async function createInitialOrders() {
 //         throw error;
 //     }
 // }
+
+
 
 
 async function rebuildDB() {

@@ -6,7 +6,6 @@ const {
   createUser,
   getUser,
   getAllUsers,
-  getUserByEmail,
 } = require("../db/users");
 const { requireUser, requireAdmin } = require("./utils");
 
@@ -28,41 +27,42 @@ usersRouter.get("/", requireAdmin, async (req, res) => {
 });
 
 usersRouter.post("/register", async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, isAdmin } = req.body;
 
   try {
-    const _user = await getUserByEmail(email);
+    const _user = await getUserByUsername(username);
 
     if (_user) {
       next({
         name: "UserExistsError",
         message: "A user by that username already exists",
       });
+    } else {
+      const user = await createUser({
+        username,
+        email,
+        password,
+        isAdmin
+      });
+
+      console.log(user);
+      const token = jwt.sign(
+        {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1w",
+        }
+      );
+
+      res.send({
+        message: "thank you for signing up",
+        token,
+      });
     }
-
-    const user = await createUser({
-      username,
-      email,
-      password,
-    });
-
-    console.log(user)
-    const token = jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1w",
-      }
-    );
-
-    res.send({
-      message: "thank you for signing up",
-      token,
-    });
   } catch ({ name, message }) {
     next({ name, message });
   }
@@ -86,7 +86,7 @@ usersRouter.post("/login", async (req, res, next) => {
         {
           id: user.id,
           username: user.username,
-          email: user.email
+          email: user.email,
         },
         process.env.JWT_SECRET,
         {

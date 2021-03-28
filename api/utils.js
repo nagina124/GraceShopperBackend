@@ -10,7 +10,7 @@ function requireUser(req, res, next) {
 };
 
 function requireAdmin(req, res, next) {
-  if(!req.user.isAdmin){
+  if(!req.isAdmin){
     res.status(401)
     next({
       name: "NotAdmin",

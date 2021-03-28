@@ -61,16 +61,16 @@ async function deleteOrder (id) {
 
 //need to figure out how to address userId and guest checkout
 //figure out how to make orders into an array 
-async function addProductToOrder ({ userId, productId, productTitle, count }) {
+async function addProductToOrder ({ userId, productId, productTitle, count, orderComplete }) {
     console.log(productId, "line 64")
     const product = await getProductById(productId)
     console.log(product, "line 65")
     try {
         const {rows: [order] } = await client.query(`
-            INSERT INTO orders( "userId", "productId", "productTitle", count)
-            VALUES($1, $2, $3, $4)
+            INSERT INTO orders( "userId", "productId", "productTitle", count, "orderComplete")
+            VALUES($1, $2, $3, $4, $5)
             RETURNING *;
-        `, [userId, productId, productTitle, count])
+        `, [userId, productId, productTitle, count, orderComplete])
 
         // console.log(order.products, "line 76")
         // order.products.push(product)

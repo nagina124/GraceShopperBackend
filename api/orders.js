@@ -31,7 +31,7 @@ ordersRouter.post('/:orderId', async(req, res, next) => {
     // console.log(req.body)
     // console.log(req.user)
     const { orderId } = req.params;
-    const { productId, productTitle, count } = req.body;
+    const { productId, productTitle, count, orderComplete } = req.body;
 
     try {
         const usersOrder = await getOrderById(orderId)
@@ -42,7 +42,7 @@ ordersRouter.post('/:orderId', async(req, res, next) => {
             const increasedCount = await increaseCountOfProduct(productTitle)
             res.send(increasedCount)
         } else {
-            const updatedCart = await addProductToOrder({orderId: usersOrder.id, productId, productTitle, count})
+            const updatedCart = await addProductToOrder({orderId: usersOrder.id, productId, productTitle, count, orderComplete})
             res.send(updatedCart)
         }
         

@@ -94,7 +94,7 @@ usersRouter.post("/login", async (req, res, next) => {
         }
       );
 
-      res.send({ message: "you're logged in!", token: token });
+      res.send({ message: "you're logged in!", token: token, admin: user.isAdmin });
     } else {
       next({
         name: "IncorrectCredentialsError",

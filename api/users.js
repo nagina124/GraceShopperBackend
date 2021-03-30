@@ -7,7 +7,7 @@ const {
   getUser,
   getAllUsers,
 } = require("../db/users");
-const { requireUser, requireAdmin } = require("./utils");
+const { requireUser} = require("./utils");
 
 usersRouter.use((req, res, next) => {
   console.log("A request is being made to /users");
@@ -15,7 +15,7 @@ usersRouter.use((req, res, next) => {
   next();
 });
 
-usersRouter.get("/", requireAdmin, async (req, res) => {
+usersRouter.get("/",  async (req, res) => {
   try {
     const users = await getAllUsers();
     res.send({

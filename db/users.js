@@ -6,7 +6,7 @@ async function createUser({ email, username, password, isAdmin }) {
   try {
     const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
     const {
-      rows: [user],
+      rows: [user]
     } = await client.query(`
             INSERT INTO users(email, username, password, "isAdmin")
             VALUES($1, $2, $3, $4) 

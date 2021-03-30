@@ -28,17 +28,17 @@ productsRouter.get("/:category", async (req, res, next) => {
   }
 });
 
-productsRouter.post("/", requireAdmin, async (req, res, next) => {
-  const { id } = req.admin; // we need to do some check for admin for functionality to work, this is placeholder code.
+productsRouter.post("/", async (req, res, next) => {
+  // const { id } = req.admin; // we need to do some check for admin for functionality to work, this is placeholder code.
   const { category, title, description, price, inventory } = req.body;
   console.log("This is the req.admin test:", req.user);
-  if (!id) {
-    res.status(401);
-    next({
-      name: "AuthorizationError",
-      message: "You are not authorized to create a product",
-    });
-  }
+  // if (!id) {
+  //   res.status(401);
+  //   next({
+  //     name: "AuthorizationError",
+  //     message: "You are not authorized to create a product",
+  //   });
+  // }
   try {
     const createdProduct = await createProduct({
       category,
@@ -53,17 +53,17 @@ productsRouter.post("/", requireAdmin, async (req, res, next) => {
   }
 });
 
-productsRouter.patch("/:productId", requireAdmin, async (req, res, next) => {
-  const { id } = req.admin; // **
+productsRouter.patch("/:productId", async (req, res, next) => {
+  // const { id } = req.admin; // **
   const { productId } = req.params;
   const { category, title, description, price, inventory } = req.body;
-  if (!id) {
-    res.status(401);
-    next({
-      name: "AuthorizationError",
-      message: "You are not authorized to create a product",
-    });
-  }
+  // if (!id) {
+  //   res.status(401);
+  //   next({
+  //     name: "AuthorizationError",
+  //     message: "You are not authorized to create a product",
+  //   });
+  // }
   try {
     const updatedProduct = await updateProduct({
       id: productId,
@@ -79,8 +79,8 @@ productsRouter.patch("/:productId", requireAdmin, async (req, res, next) => {
   }
 });
 
-productsRouter.delete("/:productId", requireAdmin, async (req, res, next) => {
-  const { id } = req.admin; //**
+productsRouter.delete("/:productId", async (req, res, next) => {
+  // const { id } = req.admin; //**
   const { productId } = req.params;
   try {
     const deletedProduct = await deleteProduct(productId);

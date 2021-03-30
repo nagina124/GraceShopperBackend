@@ -27,7 +27,7 @@ usersRouter.get("/", requireAdmin, async (req, res) => {
 });
 
 usersRouter.post("/register", async (req, res, next) => {
-  const { username, email, password, isAdmin } = req.body;
+  const { username, email, password } = req.body;
 
   try {
     const _user = await getUserByUsername(username);
@@ -42,7 +42,7 @@ usersRouter.post("/register", async (req, res, next) => {
         username,
         email,
         password,
-        isAdmin
+        isAdmin: false,
       });
 
       console.log(user);
@@ -94,7 +94,11 @@ usersRouter.post("/login", async (req, res, next) => {
         }
       );
 
-      res.send({ message: "you're logged in!", token: token, admin: user.isAdmin });
+      res.send({
+        message: "you're logged in!",
+        token: token,
+        admin: user.isAdmin,
+      });
     } else {
       next({
         name: "IncorrectCredentialsError",

@@ -6,9 +6,8 @@ const {
   createUser,
   getUser,
   getAllUsers,
-  getUserByEmail,
 } = require("../db/users");
-const { requireUser, requireAdmin } = require("./utils");
+const { requireUser} = require("./utils");
 
 usersRouter.use((req, res, next) => {
   console.log("A request is being made to /users");
@@ -16,7 +15,7 @@ usersRouter.use((req, res, next) => {
   next();
 });
 
-usersRouter.get("/", requireAdmin, async (req, res) => {
+usersRouter.get("/",  async (req, res) => {
   try {
     const users = await getAllUsers();
     res.send({
@@ -31,38 +30,39 @@ usersRouter.post("/register", async (req, res, next) => {
   const { username, email, password } = req.body;
 
   try {
-    const _user = await getUserByEmail(email);
+    const _user = await getUserByUsername(username);
 
     if (_user) {
       next({
         name: "UserExistsError",
         message: "A user by that username already exists",
       });
+    } else {
+      const user = await createUser({
+        username,
+        email,
+        password,
+        isAdmin: false,
+      });
+
+      console.log(user);
+      const token = jwt.sign(
+        {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1w",
+        }
+      );
+
+      res.send({
+        message: "thank you for signing up",
+        token,
+      });
     }
-
-    const user = await createUser({
-      username,
-      email,
-      password,
-    });
-
-    console.log(user)
-    const token = jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1w",
-      }
-    );
-
-    res.send({
-      message: "thank you for signing up",
-      token,
-    });
   } catch ({ name, message }) {
     next({ name, message });
   }
@@ -86,7 +86,7 @@ usersRouter.post("/login", async (req, res, next) => {
         {
           id: user.id,
           username: user.username,
-          email: user.email
+          email: user.email,
         },
         process.env.JWT_SECRET,
         {
@@ -94,7 +94,11 @@ usersRouter.post("/login", async (req, res, next) => {
         }
       );
 
-      res.send({ message: "you're logged in!", token: token });
+      res.send({
+        message: "you're logged in!",
+        token: token,
+        admin: user.isAdmin,
+      });
     } else {
       next({
         name: "IncorrectCredentialsError",

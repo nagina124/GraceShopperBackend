@@ -31,7 +31,7 @@ async function createTables() {
         
         CREATE TABLE products (
             id SERIAL PRIMARY KEY,
-            category VARCHAR(255) UNIQUE NOT NULL,
+            category VARCHAR(255) NOT NULL,
             title VARCHAR(255) UNIQUE NOT NULL,
             description TEXT NOT NULL,
             price FLOAT NOT NULL,

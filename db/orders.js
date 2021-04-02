@@ -94,6 +94,17 @@ async function getOrderById (id) {
     }
 }
 
+async function getAllOrders() {
+    try {
+      const {rows} = await client.query(`
+        SELECT * FROM orders;
+      `)
+      return rows;
+    } catch (error) {
+        throw error
+    }
+  }
+
 
 async function increaseCountOfProduct (productTitle) {
     try {
@@ -128,5 +139,6 @@ module.exports = {
     // updateOrder,
     addProductToOrder,
     getOrderById, 
+    getAllOrders,
     increaseCountOfProduct
 }

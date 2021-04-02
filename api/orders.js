@@ -1,6 +1,6 @@
 const express = require('express');
 const ordersRouter = express.Router();
-const { createOrder, addProductToOrder, getOrderById, deleteProductFromOrder, increaseCountOfProduct } = require('../db/orders');
+const { createOrder, addProductToOrder, getOrderById, deleteProductFromOrder, increaseCountOfProduct, getAllOrders } = require('../db/orders');
 
 
 ordersRouter.post('/', async(req, res, next) => {
@@ -15,6 +15,14 @@ ordersRouter.post('/', async(req, res, next) => {
     }
 })
 
+ordersRouter.get("/", async (req, res, next) => {
+    try {
+      const orders = await getAllOrders();
+      res.send(orders);
+    } catch (error) {
+      next(error);
+    }
+  });
 
 //GET - /:user_id
 //Find all products associated to a user, using req.params.user_id, through the Carts table.

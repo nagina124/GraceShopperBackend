@@ -25,11 +25,11 @@ async function getAllProducts() {
 
 async function getProductsByCategory(category) {
   try {
-    const {rows: [product]} = await client.query(`
+    const { rows } = await client.query(`
       SELECT * FROM products 
       WHERE category=$1;
   `, [category]);
-  return product;
+  return rows;
 } catch (error) {
     throw error
 }

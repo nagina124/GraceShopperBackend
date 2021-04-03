@@ -62,6 +62,7 @@ async function getUserById(id) {
     if (!user) {
       return null;
     }
+    return user;
   } catch (error) {
     throw error;
   }

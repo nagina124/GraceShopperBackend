@@ -15,14 +15,15 @@ ordersRouter.post('/', async(req, res, next) => {
     }
 })
 
+
 ordersRouter.get("/", async (req, res, next) => {
     try {
-      const orders = await getAllOrders();
-      res.send(orders);
+        const orders = await getAllOrders();
+        res.send(orders);
     } catch (error) {
-      next(error);
+        next(error);
     }
-  });
+});
 
 //GET - /:user_id
 //Find all products associated to a user, using req.params.user_id, through the Carts table.

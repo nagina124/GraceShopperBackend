@@ -105,6 +105,19 @@ async function getAllOrders() {
     }
   }
 
+async function getOrderForUser(userId) {
+    try {
+        const {rows: [order]} = await client.query(`
+        SELECT * 
+        FROM orders
+        WHERE "userId"=$1 AND "orderComplete"=false;
+        `, [userId])
+        return order;
+    } catch (error) {
+        throw error
+    }
+}
+
 
 async function increaseCountOfProduct (productTitle) {
     try {
@@ -140,5 +153,6 @@ module.exports = {
     addProductToOrder,
     getOrderById, 
     getAllOrders,
+    getOrderForUser,
     increaseCountOfProduct
 }

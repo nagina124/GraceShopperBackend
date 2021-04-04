@@ -35,23 +35,24 @@ async function getProductsByCategory(category) {
 }
 }
 
-async function createProduct({category, title, description, price, inventory}) {
+async function createProduct({category, title, productURL, description, price, inventory}) {
   try {
     const { rows: [product] } = await client.query(`
-      INSERT INTO products(category, title, description, price, inventory)
-      VALUES($1, $2, $3, $4, $5)
+      INSERT INTO products(category, title, productURL, description, price, inventory)
+      VALUES($1, $2, $3, $4, $5, $6)
       RETURNING *;
-    `, [category, title, description, price, inventory])
+    `, [category, title, productURL, description, price, inventory])
     return product;
   } catch (error) {
       throw error;
   }
 }
 
-async function updateProduct({ id, category, title, description, price, inventory }) {
-  const fields = { category: category, title: title, description: description, price: price, inventory: inventory }
+async function updateProduct({ id, category, title, productURL, description, price, inventory }) {
+  const fields = { category: category, title: title, productURL: productURL, description: description, price: price, inventory: inventory }
   if (category === undefined || category === null) delete fields.category;
   if (title === undefined || title === null) delete fields.title;
+  if (productURL === undefined || productURL === null) delete fields.productURL;
   if (description === undefined || description === null) delete fields.description;
   if (price === undefined || price === null) delete fields.price;
   if (inventory === undefined || inventory === null) delete fields.inventory;

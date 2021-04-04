@@ -268,7 +268,7 @@ async function createInitialProducts() {
 async function createInitialOrders() {
   try {
     console.log("starting to create orders");
-    const [cloud, zelda, mario] = await getAllUsers();
+    const [cloud, zelda, mario, isabelle] = await getAllUsers();
     const [
       finalFantasyVII,
       lastOfUsPartII,
@@ -355,7 +355,7 @@ async function createInitialOrders() {
         orderComplete: false,
       },
       {
-        userId: cloud.id,
+        userId: isabelle.id,
         productId: yakuzaDragon.id,
         productTitle: yakuzaDragon.title,
         count: 5,

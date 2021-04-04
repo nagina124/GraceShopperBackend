@@ -30,7 +30,7 @@ productsRouter.get("/:category", async (req, res, next) => {
 
 productsRouter.post("/", async (req, res, next) => {
   // const { id } = req.admin; // we need to do some check for admin for functionality to work, this is placeholder code.
-  const { category, title, productURL, description, price, inventory } = req.body;
+  const { category, title, productURL, description, price, inventory, imageURL, splash } = req.body;
   console.log("This is the req.admin test:", req.user);
   // if (!id) {
   //   res.status(401);
@@ -47,6 +47,8 @@ productsRouter.post("/", async (req, res, next) => {
       description,
       price,
       inventory,
+      imageURL,
+      splash
     });
     res.send(createdProduct);
   } catch (error) {
@@ -57,7 +59,7 @@ productsRouter.post("/", async (req, res, next) => {
 productsRouter.patch("/:productId", async (req, res, next) => {
   // const { id } = req.admin; // **
   const { productId } = req.params;
-  const { category, title, productURL, description, price, inventory } = req.body;
+  const { category, title, productURL, description, price, inventory, imageURL, splash } = req.body;
   // if (!id) {
   //   res.status(401);
   //   next({
@@ -74,6 +76,8 @@ productsRouter.patch("/:productId", async (req, res, next) => {
       description,
       price,
       inventory,
+      imageURL,
+      splash
     });
     res.send(updatedProduct);
   } catch (error) {

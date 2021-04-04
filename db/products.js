@@ -35,27 +35,53 @@ async function getProductsByCategory(category) {
 }
 }
 
-async function createProduct({category, title, productURL, description, price, inventory}) {
+async function createProduct({
+  category,
+  title,
+  productURL,
+  description,
+  price,
+  inventory,
+  imageURL,
+  splash,
+}) {
   try {
-    const { rows: [product] } = await client.query(`
-      INSERT INTO products(category, title, productURL, description, price, inventory)
+    const {
+      rows: [product],
+    } = await client.query(
+      `
+      INSERT INTO products(category, title, "productURL", description, price, inventory, "imageURL", splash)
       VALUES($1, $2, $3, $4, $5, $6)
       RETURNING *;
-    `, [category, title, productURL, description, price, inventory])
+    `,
+      [category, title, productURL, description, price, inventory, imageURL, splash]
+    );
     return product;
   } catch (error) {
-      throw error;
+    throw error;
   }
 }
 
-async function updateProduct({ id, category, title, productURL, description, price, inventory }) {
-  const fields = { category: category, title: title, productURL: productURL, description: description, price: price, inventory: inventory }
+async function updateProduct({ id, category, title, productURL, description, price, inventory, imageURL, splash }) {
+  const fields = {
+    category: category,
+    title: title,
+    productURL: productURL,
+    description: description,
+    price: price,
+    inventory: inventory,
+    imageURL: imageURL,
+    splash: splash
+  }
+
   if (category === undefined || category === null) delete fields.category;
   if (title === undefined || title === null) delete fields.title;
   if (productURL === undefined || productURL === null) delete fields.productURL;
   if (description === undefined || description === null) delete fields.description;
   if (price === undefined || price === null) delete fields.price;
   if (inventory === undefined || inventory === null) delete fields.inventory;
+  if (imageURL === undefined || imageURL === null) delete fields.imageURL;
+  if (splash === undefined || splash === null) delete fields.splash;
 
   const setString = Object.keys(fields).map(
     (key, index) => `"${ key }"=$${ index + 1 }`

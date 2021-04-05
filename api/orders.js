@@ -1,6 +1,6 @@
 const express = require('express');
 const ordersRouter = express.Router();
-const { createOrder, addProductToOrder, getOrderById, deleteProductFromOrder, increaseCountOfProduct, getAllOrders } = require('../db/orders');
+const { createOrder, addProductToOrder, getOrderById, deleteProductFromOrder, increaseCountOfProduct, getAllOrders, getOrderForUser } = require('../db/orders');
 
 
 ordersRouter.post('/', async(req, res, next) => {
@@ -29,9 +29,15 @@ ordersRouter.get("/", async (req, res, next) => {
 //Find all products associated to a user, using req.params.user_id, through the Carts table.
 //If successful, respond with all products associated to user_id.
 
-// ordersRouter.get('/user_id', requireUser, async(req, res, next) => {
-
-// })
+ordersRouter.get('/:userId', async(req, res, next) => {
+    const {userId} = req.params;
+    try {
+        const orders = await getOrderForUser(userId);
+        res.send(orders);
+    } catch (error) {
+        next(error);
+    }
+})
 
 //POST - /:user_id/:product_id or /
 //Insert into Carts table 

@@ -99,6 +99,7 @@ usersRouter.post("/login", async (req, res, next) => {
         message: "you're logged in!",
         token: token,
         admin: user.isAdmin,
+        userId: user.id
       });
     } else {
       next({

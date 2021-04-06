@@ -21,6 +21,15 @@ ordersRouter.post("/", async (req, res, next) => {
   }
 });
 
+ordersRouter.get("/", async (req, res, next) => {
+  try {
+    const orders = await getAllOrders();
+    res.send(orders);
+  } catch (error) {
+    next(error);
+  }
+});
+
 ordersRouter.get("/:userId", async (req, res, next) => {
   const { userId } = req.params;
   try {

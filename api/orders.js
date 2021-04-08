@@ -2,19 +2,16 @@ const express = require("express");
 const ordersRouter = express.Router();
 const {
   createOrder,
-  addProductToOrder,
-  getOrderById,
-  deleteProductFromOrder,
-  increaseCountOfProduct,
   getAllOrders,
   getOrderForUser,
+  deleteOrder
 } = require("../db/orders");
 
 ordersRouter.post("/", async (req, res, next) => {
-  const { productId, productTitle, count } = req.body;
+  const { userId, productId, productTitle, count } = req.body;
 
   try {
-    const createdOrder = await createOrder({ productId, productTitle, count });
+    const createdOrder = await createOrder({ userId, productId, productTitle, count, orderStatus: "created" });
     res.send(createdOrder);
   } catch (error) {
     next(error);
@@ -44,55 +41,37 @@ ordersRouter.get("/:userId", async (req, res, next) => {
 //Find all products associated to a user, using req.params.user_id, through the Carts table.
 //If successful, respond with all products associated to user_id.
 
-ordersRouter.get("/:userId", async (req, res, next) => {
-  const { userId } = req.params;
-  try {
-    const orders = await getOrderForUser(userId);
-    res.send(orders);
-  } catch (error) {
-    next(error);
-  }
-});
+// ordersRouter.get("/:userId", async (req, res, next) => {
+//   const { userId } = req.params;
+//   try {
+//     const orders = await getOrderForUser(userId);
+//     res.send(orders);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+// ordersRouter.get("/:orderId", async (req, res, next) => {
+//   const { orderId } = req.params;
+//   try {
+//     const orders = await getOrderById(orderId);
+//     res.send(orders);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 //POST - /:user_id/:product_id or /
 //Insert into Carts table
 
-ordersRouter.post("/:orderId", async (req, res, next) => {
-  // console.log(req.body)
-  // console.log(req.user)
-  const { orderId } = req.params;
-  const { productId, productTitle, count, orderComplete } = req.body;
-
-  try {
-    const usersOrder = await getOrderById(orderId);
-    const matchedProduct = usersOrder.filter((order) => {
-      return productTitle === order.productTitle;
-    });
-    if (matchedProduct) {
-      const increasedCount = await increaseCountOfProduct(productTitle);
-      res.send(increasedCount);
-    } else {
-      const updatedCart = await addProductToOrder({
-        orderId: usersOrder.id,
-        productId,
-        productTitle,
-        count,
-        orderComplete,
-      });
-      res.send(updatedCart);
-    }
-  } catch ({ name, message }) {
-    next({ name, message });
-  }
-});
 
 //DELETE - /:product_id
 //Remove row from databse where columns user_id and product_id match req.params.user_id and req.params.product_id
 
-ordersRouter.delete("/:productId", async (req, res, next) => {
-  const { productId } = req.params;
+ordersRouter.delete("/:orderId", async (req, res, next) => {
+  const { orderId } = req.params;
   try {
-    const updatedCart = await deleteProductFromOrder(productId);
+    const updatedCart = await deleteOrder(orderId);
     res.send(updatedCart);
   } catch (error) {
     next(error);

@@ -6,6 +6,7 @@ const {
   createUser,
   getUser,
   getAllUsers,
+  deleteUser
 } = require("../db/users");
 const { requireUser} = require("./utils");
 
@@ -129,6 +130,36 @@ usersRouter.get("/me", async (req, res, next) => {
     // }
   } catch ({ name, message }) {
     next({ name, message });
+  }
+});
+
+usersRouter.patch("/:userId", async (req, res, next) => {
+  
+  const { userId } = req.params;
+  const { email, username, password, isAdmin } = req.body;
+
+  try {
+    const updatedUser = await updateUser({
+      id: userId,
+      email,
+      username, 
+      password,
+      isAdmin
+    });
+    res.send(updatedUser);
+  } catch (error) {
+    next(error);
+  }
+});
+
+usersRouter.delete("/:userId", async (req, res, next) => {
+  // const { id } = req.admin; //**
+  const { userId } = req.params;
+  try {
+    const deletedUser = await deleteUser(userId);
+    res.send(deletedUser);
+  } catch (error) {
+    next(error);
   }
 });
 

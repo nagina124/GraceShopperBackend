@@ -1,19 +1,24 @@
 const client = require("./client");
 const { getProductById } = require("./products");
 
-async function createOrder({ productId, productTitle, count }) {
+async function createOrder({
+  userId,
+  productId,
+  productTitle,
+  count,
+  orderStatus,
+}) {
   try {
     const {
       rows: [order],
     } = await client.query(
       `
-            INSERT into orders("productId", "productTitle", count)
-            VALUES($1, $2, $3)
+            INSERT into orders("userId", "productId", "productTitle", count, "orderStatus")
+            VALUES($1, $2, $3, $4, $5)
             RETURNING *;
         `,
-      [productId, productTitle, count]
+      [userId, productId, productTitle, count, orderStatus]
     );
-    order.products = [];
     return order;
   } catch (error) {
     throw error;
@@ -38,13 +43,13 @@ async function deleteProductFromOrder(id) {
 
 async function deleteOrder(id) {
   try {
-    await client.query(
-      `
-            DELETE FROM orders
-            WHERE "productId"=$1;
-        `,
-      [id]
-    );
+    // await client.query(
+    //   `
+    //         DELETE FROM orders
+    //         WHERE "productId"=$1;
+    //     `,
+    //   [id]
+    // );
 
     const { rows } = await client.query(
       `
@@ -54,6 +59,8 @@ async function deleteOrder(id) {
         `,
       [id]
     );
+
+    return rows;
   } catch (error) {
     throw error;
   }
@@ -76,7 +83,7 @@ async function addProductToOrder({
   productId,
   productTitle,
   count,
-  orderComplete,
+  orderStatus,
 }) {
   console.log(productId, "line 64");
   const product = await getProductById(productId);
@@ -86,11 +93,11 @@ async function addProductToOrder({
       rows: [order],
     } = await client.query(
       `
-            INSERT INTO orders( "userId", "productId", "productTitle", count, "orderComplete")
+            INSERT INTO orders( "userId", "productId", "productTitle", count, "orderStatus")
             VALUES($1, $2, $3, $4, $5)
             RETURNING *;
         `,
-      [userId, productId, productTitle, count, orderComplete]
+      [userId, productId, productTitle, count, orderStatus]
     );
 
     // console.log(order.products, "line 76")
@@ -123,11 +130,12 @@ async function getOrderById(id) {
 async function getAllOrders() {
   try {
     const { rows } = await client.query(`
-    SELECT orders.*, products.price AS "productPrice", users.username AS "creatorName", users.email AS "creatorEmail" 
+    SELECT orders.*, products.price AS "productPrice", products."imageURL", users.username AS "creatorName", users.email AS "creatorEmail" 
     FROM orders 
     INNER JOIN products ON products.id = orders."productId"
     INNER JOIN users ON users.id = orders."userId";
       `);
+    console.log(rows);
     return rows;
   } catch (error) {
     throw error;
@@ -138,14 +146,15 @@ async function getOrderForUser(userId) {
   try {
     const { rows } = await client.query(
       `
-        SELECT orders.*, products.price AS "productPrice", users.username AS "creatorName", users.email AS "creatorEmail"
-        FROM orders 
-        INNER JOIN products ON products.id = orders."productId"
-        INNER JOIN users ON users.id = orders."userId"
-        WHERE orders."userId"=$1 AND orders."orderComplete"=false;
+      SELECT orders.*, products.price AS "productPrice", products."imageURL"
+      FROM orders 
+      JOIN products ON products.id = orders."productId"
+      WHERE orders."userId"= $1 AND orders."orderStatus" = 'created';
         `,
       [userId]
     );
+
+    console.log(rows);
     return rows;
   } catch (error) {
     throw error;
@@ -157,7 +166,7 @@ async function getOrderForUser(userId) {
 //         const {rows: [order]} = await client.query(`
 //         SELECT *
 //         FROM orders
-//         WHERE "userId"=$1 AND "orderComplete"=false;
+//         WHERE "userId"=$1 AND "orderStatus"=false;
 //         `, [userId])
 //         return order;
 //     } catch (error) {

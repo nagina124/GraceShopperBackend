@@ -47,8 +47,7 @@ async function createTables() {
             "productId" INTEGER REFERENCES products(id),
             "productTitle" VARCHAR(255) REFERENCES products(title),
             count INTEGER NOT NULL, 
-            "orderComplete" BOOLEAN DEFAULT FALSE,
-            UNIQUE ("userId", "productId")
+            "orderStatus" VARCHAR(255) NOT NULL
         );
         
         CREATE TABLE reviews (
@@ -235,7 +234,7 @@ async function createInitialProducts() {
         price: 19.99,
         inventory: 25,
         imageURL:
-          "https://static.wikia.nocookie.net/devilmaycry/images/3/31/DMC5_Base_game.png/revision/latest?cb=20190325010814",
+          "https://i.imgur.com/2y0LUNa.jpg",
         splash:
           "https://cdn.vox-cdn.com/thumbor/_ieaiEynCl98YhvABCthnKIpO9Q=/0x0:1778x1000/1200x800/filters:focal(747x358:1031x642)/cdn.vox-cdn.com/uploads/chorus_image/image/63174241/DMC5_DeluxeEdition_KeyArt.0.jpg",
       },
@@ -289,77 +288,77 @@ async function createInitialOrders() {
         productId: finalFantasyVII.id,
         productTitle: finalFantasyVII.title,
         count: 2,
-        orderComplete: false,
+        orderStatus: "created",
       },
       {
         userId: zelda.id,
         productId: lastOfUsPartII.id,
         productTitle: lastOfUsPartII.title,
         count: 1,
-        orderComplete: false,
+        orderStatus: "created",
       },
       {
         userId: mario.id,
         productId: theWitcherIII.id,
         productTitle: theWitcherIII.title,
         count: 3,
-        orderComplete: false,
+        orderStatus: "created",
       },
       {
         userId: mario.id,
         productId: streetFighterV.id,
         productTitle: streetFighterV.title,
         count: 1,
-        orderComplete: false,
+        orderStatus: "pending",
       },
       {
         userId: cloud.id,
         productId: residentEvilVillage.id,
         productTitle: residentEvilVillage.title,
         count: 2,
-        orderComplete: true,
+        orderStatus: "pending",
       },
       {
         userId: cloud.id,
         productId: theSims4.id,
         productTitle: theSims4.title,
         count: 4,
-        orderComplete: false,
+        orderStatus: "completed",
       },
       {
         userId: cloud.id,
         productId: animalCrossingNewHorizons.id,
         productTitle: animalCrossingNewHorizons.title,
         count: 1,
-        orderComplete: false,
+        orderStatus: "completed",
       },
       {
         userId: mario.id,
         productId: spiderManMilesMorales.id,
         productTitle: spiderManMilesMorales.title,
         count: 1,
-        orderComplete: false,
+        orderStatus: "canceled",
       },
       {
         userId: zelda.id,
         productId: personaV.id,
         productTitle: personaV.title,
         count: 3,
-        orderComplete: false,
+        orderStatus: "completed",
       },
       {
         userId: zelda.id,
         productId: devilMayCry5.id,
         productTitle: devilMayCry5.title,
         count: 1,
-        orderComplete: false,
+        orderStatus: "pending",
       },
       {
         userId: isabelle.id,
         productId: yakuzaDragon.id,
         productTitle: yakuzaDragon.title,
         count: 5,
-        orderComplete: false,
+        orderStatus: "created",
       },
     ];
 

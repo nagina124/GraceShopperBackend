@@ -47,8 +47,7 @@ async function createTables() {
             "productId" INTEGER REFERENCES products(id),
             "productTitle" VARCHAR(255) REFERENCES products(title),
             count INTEGER NOT NULL, 
-            "orderStatus" VARCHAR(255) NOT NULL,
-            UNIQUE ("userId", "productId")
+            "orderStatus" VARCHAR(255) NOT NULL
         );
         
         CREATE TABLE reviews (

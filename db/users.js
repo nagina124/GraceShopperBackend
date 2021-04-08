@@ -100,6 +100,81 @@ async function getUserByEmail(email) {
   }
 }
 
+async function updateUser({
+  id,
+  email,
+  username, 
+  password,
+  isAdmin
+}) {
+  const fields = {
+    email: email,
+    username: username,
+    password: password,
+    isAdmin: isAdmin
+  };
+
+  if (email === undefined || email === null) delete fields.email;
+  if (username === undefined || username === null) delete fields.username;
+  if (password === undefined || password === null) delete fields.password;
+  if (isAdmin === undefined || isAdmin === null) delete fields.isAdmin;
+ 
+
+  const setString = Object.keys(fields)
+    .map((key, index) => `"${key}"=$${index + 1}`)
+    .join(", ");
+
+  // return early if this is called without fields
+  if (setString.length === 0) {
+    return;
+  }
+
+  try {
+    const {
+      rows: [users],
+    } = await client.query(
+      `
+      UPDATE users
+      SET ${setString}
+      WHERE id=${id}
+      RETURNING *;
+      `,
+      Object.values(fields)
+    );
+    return users;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function deleteUser(id) {
+  try {
+
+    await client.query(
+      `
+      DELETE FROM orders 
+      WHERE "userId"=$1
+      `,
+      [id]
+    );
+    
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+      DELETE FROM users
+      WHERE id=$1
+      RETURNING *;
+      `,
+      [id]
+    );
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   createUser,
   getAllUsers,
@@ -107,4 +182,6 @@ module.exports = {
   getUserById,
   getUserByUsername,
   getUserByEmail,
+  updateUser,
+  deleteUser
 };

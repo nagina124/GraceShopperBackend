@@ -130,7 +130,7 @@ async function getOrderById(id) {
 async function getAllOrders() {
   try {
     const { rows } = await client.query(`
-    SELECT orders.*, products.price AS "productPrice", users.username AS "creatorName", users.email AS "creatorEmail" 
+    SELECT orders.*, products.price AS "productPrice", products."imageURL", users.username AS "creatorName", users.email AS "creatorEmail" 
     FROM orders 
     INNER JOIN products ON products.id = orders."productId"
     INNER JOIN users ON users.id = orders."userId";
@@ -146,7 +146,7 @@ async function getOrderForUser(userId) {
   try {
     const { rows } = await client.query(
       `
-      SELECT orders.*, products.price AS "productPrice"
+      SELECT orders.*, products.price AS "productPrice", products."imageURL"
       FROM orders 
       JOIN products ON products.id = orders."productId"
       WHERE orders."userId"= $1 AND orders."orderStatus" = 'created';

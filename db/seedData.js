@@ -234,7 +234,7 @@ async function createInitialProducts() {
         price: 19.99,
         inventory: 25,
         imageURL:
-          "https://static.wikia.nocookie.net/devilmaycry/images/3/31/DMC5_Base_game.png/revision/latest?cb=20190325010814",
+          "https://i.imgur.com/2y0LUNa.jpg",
         splash:
           "https://cdn.vox-cdn.com/thumbor/_ieaiEynCl98YhvABCthnKIpO9Q=/0x0:1778x1000/1200x800/filters:focal(747x358:1031x642)/cdn.vox-cdn.com/uploads/chorus_image/image/63174241/DMC5_DeluxeEdition_KeyArt.0.jpg",
       },

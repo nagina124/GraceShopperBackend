@@ -144,21 +144,18 @@ async function getAllOrders() {
 
 async function getOrderForUser(userId) {
   try {
-    const {
-      rows: [orders],
-    } = await client.query(
+    const { rows } = await client.query(
       `
-        SELECT orders.*, products.price AS "productPrice", users.username AS "creatorName", users.email AS "creatorEmail"
-        FROM orders 
-        INNER JOIN products ON products.id = orders."productId"
-        INNER JOIN users ON orders."userId" = users.id
-        WHERE orders."userId"=$1 AND orders."orderStatus"="created";
+      SELECT orders.*, products.price AS "productPrice"
+      FROM orders 
+      JOIN products ON products.id = orders."productId"
+      WHERE orders."userId"= $1 AND orders."orderStatus" = 'created';
         `,
       [userId]
     );
 
-    console.log(orders);
-    return orders;
+    console.log(rows);
+    return rows;
   } catch (error) {
     throw error;
   }

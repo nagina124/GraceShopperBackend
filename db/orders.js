@@ -149,7 +149,7 @@ async function getOrderForUser(userId) {
       SELECT orders.*, products.price AS "productPrice", products."imageURL"
       FROM orders 
       JOIN products ON products.id = orders."productId"
-      WHERE orders."userId"= $1 AND orders."orderStatus" = 'created';
+      WHERE orders."userId"= $1 AND orders."orderStatus" = 'created' AND orders."orderStatus" = 'pending';
         `,
       [userId]
     );

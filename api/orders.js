@@ -4,14 +4,21 @@ const {
   createOrder,
   getAllOrders,
   getOrderForUser,
-  deleteOrder
+  deleteOrder,
+  updateOrder,
 } = require("../db/orders");
 
 ordersRouter.post("/", async (req, res, next) => {
   const { userId, productId, productTitle, count } = req.body;
 
   try {
-    const createdOrder = await createOrder({ userId, productId, productTitle, count, orderStatus: "created" });
+    const createdOrder = await createOrder({
+      userId,
+      productId,
+      productTitle,
+      count,
+      orderStatus: "created",
+    });
     res.send(createdOrder);
   } catch (error) {
     next(error);
@@ -64,6 +71,31 @@ ordersRouter.get("/:userId", async (req, res, next) => {
 //POST - /:user_id/:product_id or /
 //Insert into Carts table
 
+ordersRouter.patch("/:orderId", async (req, res, next) => {
+  // const { id } = req.admin; // **
+  const { orderId } = req.params;
+  const { userId, productId, productTitle, count, orderStatus } = req.body;
+  // if (!id) {
+  //   res.status(401);
+  //   next({
+  //     name: "AuthorizationError",
+  //     message: "You are not authorized to create a product",
+  //   });
+  // }
+  try {
+    const updatedOrder = await updateOrder({
+      id: orderId,
+      userId,
+      productId,
+      productTitle,
+      count,
+      orderStatus,
+    });
+    res.send(updatedOrder);
+  } catch (error) {
+    next(error);
+  }
+});
 
 //DELETE - /:product_id
 //Remove row from databse where columns user_id and product_id match req.params.user_id and req.params.product_id

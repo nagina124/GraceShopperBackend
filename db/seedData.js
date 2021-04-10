@@ -125,7 +125,7 @@ async function createInitialProducts() {
           "https://gamingbolt.com/wp-content/uploads/2020/02/Final-Fantasy-VII-Remake-Key-Vis_02-07-20_001l.jpg",
       },
       {
-        category: "Action-Adventure",
+        category: "ACTION-ADVENTURE",
         title: "The Last Of Us Part II",
         productURL: "the-last-of-us-part-ii",
         description:
@@ -151,7 +151,7 @@ async function createInitialProducts() {
           "https://www.wallpaperflare.com/static/206/494/530/the-witcher-3-wild-hunt-video-games-witcher-iii-wallpaper.jpg",
       },
       {
-        category: "Fighting",
+        category: "FIGHTING",
         title: "Street Fighter V: Championship Edition",
         productURL: "street-fighter-v-championship-edition",
         description:
@@ -163,7 +163,7 @@ async function createInitialProducts() {
         splash: "https://nexushub.co.za/images/nexus/00009/9927_sfv_header.jpg",
       },
       {
-        category: "Horror",
+        category: "HORROR",
         title: "Resident Evil Village",
         productURL: "resident-evil-village",
         description:
@@ -174,7 +174,7 @@ async function createInitialProducts() {
         splash: "http://cdn.mos.cms.futurecdn.net/pZVMTWc7TgFYAosDjmUnPT.jpg",
       },
       {
-        category: "Simulation",
+        category: "SIMULATION",
         title: "The Sims 4",
         productURL: "the-sims-4",
         description:
@@ -187,7 +187,7 @@ async function createInitialProducts() {
           "https://simscommunity.info/wp-content/uploads/2019/07/Screenshot-39.jpg",
       },
       {
-        category: "Simulation",
+        category: "SIMULATION",
         title: "Animal Crossing: New Horizons",
         productURL: "animal-crossing-new-horizons",
         description:
@@ -200,7 +200,7 @@ async function createInitialProducts() {
           "https://media.comicbook.com/2020/01/animal-crossing-1201472-1280x0.jpeg",
       },
       {
-        category: "Action-Adventure",
+        category: "ACTION-ADVENTURE",
         title: "Spider-Man: Miles Morales",
         productURL: "spider-man-miles-morales",
         description:
@@ -226,15 +226,14 @@ async function createInitialProducts() {
           "https://gamespot1.cbsistatic.com/uploads/original/172/1720905/3641283-competition_persona_header_1080.jpg",
       },
       {
-        category: "Hack-N-Slash",
+        category: "HACK-N-SLASH",
         title: "Devil May Cry 5",
         productURL: "devil-may-cry-5",
         description:
           "The ultimate Devil Hunter is back in style, in the game action fans have been waiting for. A brand new entry in the legendary action series, Devil May Cry 5 brings together its signature blend of high-octane action and otherworldly original characters with the latest Capcom gaming technology to deliver a graphically groundbreaking action-adventure masterpiece.",
         price: 19.99,
         inventory: 25,
-        imageURL:
-          "https://i.imgur.com/2y0LUNa.jpg",
+        imageURL: "https://i.imgur.com/2y0LUNa.jpg",
         splash:
           "https://cdn.vox-cdn.com/thumbor/_ieaiEynCl98YhvABCthnKIpO9Q=/0x0:1778x1000/1200x800/filters:focal(747x358:1031x642)/cdn.vox-cdn.com/uploads/chorus_image/image/63174241/DMC5_DeluxeEdition_KeyArt.0.jpg",
       },
@@ -275,11 +274,11 @@ async function createInitialOrders() {
       streetFighterV,
       residentEvilVillage,
       theSims4,
-      animalCrossingNewHorizons, 
+      animalCrossingNewHorizons,
       spiderManMilesMorales,
       personaV,
       devilMayCry5,
-      yakuzaDragon
+      yakuzaDragon,
     ] = await getAllProducts();
 
     const ordersToCreate = [

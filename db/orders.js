@@ -149,7 +149,7 @@ async function getOrderForUser(userId) {
       SELECT orders.*, products.price AS "productPrice", products."imageURL"
       FROM orders 
       JOIN products ON products.id = orders."productId"
-      WHERE orders."userId"= $1 AND orders."orderStatus" = 'created';
+      WHERE orders."userId"= $1 AND orders."orderStatus" = 'created' OR orders."orderStatus" = 'pending';
         `,
       [userId]
     );
@@ -173,6 +173,50 @@ async function getOrderForUser(userId) {
 //         throw error
 //     }
 // }
+
+async function updateOrder({ id, userId, productId, productTitle, count, orderStatus }) {
+  const fields = {
+    userId: userId,
+    productId: productId,
+    productTitle: productTitle,
+    count: count,
+    orderStatus: orderStatus,
+  };
+
+  if (userId === undefined || userId === null) delete fields.userId;
+  if (productId === undefined || productId === null) delete fields.productId;
+  if (productTitle === undefined || productTitle === null) delete fields.productTitle;
+  if (count === undefined || count === null) delete fields.count;
+  if (orderStatus === undefined || orderStatus === null) delete fields.orderStatus;
+  
+
+  const setString = Object.keys(fields)
+    .map((key, index) => `"${key}"=$${index + 1}`)
+    .join(", ");
+
+  // return early if this is called without fields
+  if (setString.length === 0) {
+    return;
+  }
+
+  try {
+    const {
+      rows: [orders],
+    } = await client.query(
+      `
+      UPDATE orders
+      SET ${setString}
+      WHERE id=${id}
+      RETURNING *;
+      `,
+      Object.values(fields)
+    );
+    
+    return orders;
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function increaseCountOfProduct(productTitle) {
   try {
@@ -211,7 +255,7 @@ module.exports = {
   createOrder,
   deleteProductFromOrder,
   deleteOrder,
-  // updateOrder,
+  updateOrder,
   addProductToOrder,
   getOrderById,
   getAllOrders,

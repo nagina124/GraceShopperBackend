@@ -6,9 +6,10 @@ const {
   createUser,
   getUser,
   getAllUsers,
-  deleteUser
+  deleteUser,
+  updateUser,
 } = require("../db/users");
-const { requireUser} = require("./utils");
+const { requireUser } = require("./utils");
 
 usersRouter.use((req, res, next) => {
   console.log("A request is being made to /users");
@@ -16,7 +17,7 @@ usersRouter.use((req, res, next) => {
   next();
 });
 
-usersRouter.get("/",  async (req, res) => {
+usersRouter.get("/", async (req, res) => {
   try {
     const users = await getAllUsers();
     res.send({
@@ -62,6 +63,7 @@ usersRouter.post("/register", async (req, res, next) => {
       res.send({
         message: "thank you for signing up",
         token,
+        userId: user.id
       });
     }
   } catch ({ name, message }) {
@@ -71,7 +73,7 @@ usersRouter.post("/register", async (req, res, next) => {
 
 usersRouter.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
-  console.log(req.user, "line73")
+  console.log(req.user, "line73");
 
   if (!username || !password) {
     next({
@@ -100,7 +102,7 @@ usersRouter.post("/login", async (req, res, next) => {
         message: "you're logged in!",
         token: token,
         admin: user.isAdmin,
-        userId: user.id
+        userId: user.id,
       });
     } else {
       next({
@@ -117,10 +119,10 @@ usersRouter.post("/login", async (req, res, next) => {
 
 usersRouter.get("/me", async (req, res, next) => {
   // const authHeader = req.header("Authorization");
-  console.log(authHeader, "line 117")
+  console.log(authHeader, "line 117");
   try {
     // if (authHeader) {
-      res.send(req.user);
+    res.send(req.user);
     // } else {
     //   res.status(401);
     //   next({
@@ -134,7 +136,6 @@ usersRouter.get("/me", async (req, res, next) => {
 });
 
 usersRouter.patch("/:userId", async (req, res, next) => {
-  
   const { userId } = req.params;
   const { email, username, password, isAdmin } = req.body;
 
@@ -142,9 +143,9 @@ usersRouter.patch("/:userId", async (req, res, next) => {
     const updatedUser = await updateUser({
       id: userId,
       email,
-      username, 
+      username,
       password,
-      isAdmin
+      isAdmin,
     });
     res.send(updatedUser);
   } catch (error) {

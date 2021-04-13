@@ -121,6 +121,7 @@ async function updateProduct({
   }
 
   try {
+
     const {
       rows: [products],
     } = await client.query(
@@ -132,6 +133,7 @@ async function updateProduct({
       `,
       Object.values(fields)
     );
+
     return products;
   } catch (error) {
     throw error;
@@ -140,7 +142,6 @@ async function updateProduct({
 
 async function deleteProduct(id) {
   try {
-
     await client.query(
       `
       DELETE FROM orders 
@@ -148,7 +149,7 @@ async function deleteProduct(id) {
       `,
       [id]
     );
-    
+
     const {
       rows: [product],
     } = await client.query(

@@ -6,17 +6,18 @@ async function createOrder({
   productId,
   count,
   orderStatus,
+  orderCreated
 }) {
   try {
     const {
       rows: [order],
     } = await client.query(
       `
-            INSERT into orders("userId", "productId", count, "orderStatus")
-            VALUES($1, $2, $3, $4)
+            INSERT into orders("userId", "productId", count, "orderStatus", "orderCreated")
+            VALUES($1, $2, $3, $4, $5)
             RETURNING *;
         `,
-      [userId, productId, count, orderStatus]
+      [userId, productId, count, orderStatus, orderCreated]
     );
     return order;
   } catch (error) {
@@ -82,6 +83,7 @@ async function addProductToOrder({
   productId,
   count,
   orderStatus,
+  orderCreated
 }) {
   console.log(productId, "line 64");
   const product = await getProductById(productId);
@@ -91,11 +93,11 @@ async function addProductToOrder({
       rows: [order],
     } = await client.query(
       `
-            INSERT INTO orders( "userId", "productId", count, "orderStatus")
-            VALUES($1, $2, $3, $4)
+            INSERT INTO orders( "userId", "productId", count, "orderStatus", "orderCreated")
+            VALUES($1, $2, $3, $4, $5)
             RETURNING *;
         `,
-      [userId, productId, count, orderStatus]
+      [userId, productId, count, orderStatus, orderCreated]
     );
 
     // console.log(order.products, "line 76")
@@ -172,18 +174,20 @@ async function getOrderForUser(userId) {
 //     }
 // }
 
-async function updateOrder({ id, userId, productId, count, orderStatus }) {
+async function updateOrder({ id, userId, productId, count, orderStatus, orderCreated }) {
   const fields = {
     userId: userId,
     productId: productId,
     count: count,
     orderStatus: orderStatus,
+    orderCreated: orderCreated
   };
 
   if (userId === undefined || userId === null) delete fields.userId;
   if (productId === undefined || productId === null) delete fields.productId;
   if (count === undefined || count === null) delete fields.count;
   if (orderStatus === undefined || orderStatus === null) delete fields.orderStatus;
+  if (orderCreated === undefined || orderStatus === null) delete fields.orderCreated;
   
 
   const setString = Object.keys(fields)

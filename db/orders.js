@@ -4,20 +4,20 @@ const { getProductById } = require("./products");
 async function createOrder({
   userId,
   productId,
-  productTitle,
   count,
   orderStatus,
+  orderCreated
 }) {
   try {
     const {
       rows: [order],
     } = await client.query(
       `
-            INSERT into orders("userId", "productId", "productTitle", count, "orderStatus")
+            INSERT into orders("userId", "productId", count, "orderStatus", "orderCreated")
             VALUES($1, $2, $3, $4, $5)
             RETURNING *;
         `,
-      [userId, productId, productTitle, count, orderStatus]
+      [userId, productId, count, orderStatus, orderCreated]
     );
     return order;
   } catch (error) {
@@ -81,9 +81,9 @@ async function deleteOrder(id) {
 async function addProductToOrder({
   userId,
   productId,
-  productTitle,
   count,
   orderStatus,
+  orderCreated
 }) {
   console.log(productId, "line 64");
   const product = await getProductById(productId);
@@ -93,11 +93,11 @@ async function addProductToOrder({
       rows: [order],
     } = await client.query(
       `
-            INSERT INTO orders( "userId", "productId", "productTitle", count, "orderStatus")
+            INSERT INTO orders( "userId", "productId", count, "orderStatus", "orderCreated")
             VALUES($1, $2, $3, $4, $5)
             RETURNING *;
         `,
-      [userId, productId, productTitle, count, orderStatus]
+      [userId, productId, count, orderStatus, orderCreated]
     );
 
     // console.log(order.products, "line 76")
@@ -130,7 +130,7 @@ async function getOrderById(id) {
 async function getAllOrders() {
   try {
     const { rows } = await client.query(`
-    SELECT orders.*, products.price AS "productPrice", products."imageURL", users.username AS "creatorName", users.email AS "creatorEmail" 
+    SELECT orders.*, products.price AS "productPrice", products."imageURL", products.title AS "productTitle", users.username AS "creatorName", users.email AS "creatorEmail" 
     FROM orders 
     INNER JOIN products ON products.id = orders."productId"
     INNER JOIN users ON users.id = orders."userId";
@@ -146,10 +146,10 @@ async function getOrderForUser(userId) {
   try {
     const { rows } = await client.query(
       `
-      SELECT orders.*, products.price AS "productPrice", products."imageURL"
+      SELECT orders.*, products.price AS "productPrice", products."imageURL",  products.title AS "productTitle"
       FROM orders 
       JOIN products ON products.id = orders."productId"
-      WHERE orders."userId"= $1 AND orders."orderStatus" = 'created' OR orders."orderStatus" = 'pending';
+      WHERE orders."userId"= $1 AND (orders."orderStatus" = 'created' OR orders."orderStatus" = 'pending');
         `,
       [userId]
     );
@@ -174,20 +174,20 @@ async function getOrderForUser(userId) {
 //     }
 // }
 
-async function updateOrder({ id, userId, productId, productTitle, count, orderStatus }) {
+async function updateOrder({ id, userId, productId, count, orderStatus, orderCreated }) {
   const fields = {
     userId: userId,
     productId: productId,
-    productTitle: productTitle,
     count: count,
     orderStatus: orderStatus,
+    orderCreated: orderCreated
   };
 
   if (userId === undefined || userId === null) delete fields.userId;
   if (productId === undefined || productId === null) delete fields.productId;
-  if (productTitle === undefined || productTitle === null) delete fields.productTitle;
   if (count === undefined || count === null) delete fields.count;
   if (orderStatus === undefined || orderStatus === null) delete fields.orderStatus;
+  if (orderCreated === undefined || orderStatus === null) delete fields.orderCreated;
   
 
   const setString = Object.keys(fields)
@@ -218,34 +218,47 @@ async function updateOrder({ id, userId, productId, productTitle, count, orderSt
   }
 }
 
-async function increaseCountOfProduct(productTitle) {
+// async function increaseCountOfProduct(productTitle) {
+//   try {
+//     const {
+//       rows: [product],
+//     } = await client.query(
+//       `
+//             SELECT *
+//             FROM orders 
+//             WHERE "productTitle"=$1;
+//         `,
+//       [productTitle]
+//     );
+
+//     const newCount = product.count + 1;
+
+//     const {
+//       rows: [order],
+//     } = await client.query(
+//       `
+//             UPDATE orders 
+//             SET count= $2
+//             WHERE "productTitle"=$1
+//             RETURNING*;
+//         `,
+//       [productTitle, newCount]
+//     );
+
+//     return order;
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+
+async function increaseCountOfProduct(orderId) {
+  
   try {
-    const {
-      rows: [product],
-    } = await client.query(
-      `
-            SELECT *
-            FROM orders 
-            WHERE "productTitle"=$1;
-        `,
-      [productTitle]
-    );
-
-    const newCount = product.count + 1;
-
-    const {
-      rows: [order],
-    } = await client.query(
-      `
-            UPDATE orders 
-            SET count= $2
-            WHERE "productTitle"=$1
-            RETURNING*;
-        `,
-      [productTitle, newCount]
-    );
-
-    return order;
+    const {rows: [count ]} = await client.query(`
+      UPDATE orders 
+      SET count = ${count} + 1
+      WHERE id =${orderId}
+    `)
   } catch (error) {
     throw error;
   }
@@ -260,5 +273,5 @@ module.exports = {
   getOrderById,
   getAllOrders,
   getOrderForUser,
-  increaseCountOfProduct,
+  // increaseCountOfProduct,
 };

@@ -9,15 +9,15 @@ const {
 } = require("../db/orders");
 
 ordersRouter.post("/", async (req, res, next) => {
-  const { userId, productId, productTitle, count } = req.body;
+  const { userId, productId, count, orderCreated } = req.body;
 
   try {
     const createdOrder = await createOrder({
       userId,
       productId,
-      productTitle,
       count,
       orderStatus: "created",
+      orderCreated,
     });
     res.send(createdOrder);
   } catch (error) {
@@ -74,7 +74,7 @@ ordersRouter.get("/:userId", async (req, res, next) => {
 ordersRouter.patch("/:orderId", async (req, res, next) => {
   // const { id } = req.admin; // **
   const { orderId } = req.params;
-  const { userId, productId, productTitle, count, orderStatus } = req.body;
+  const { userId, productId, count, orderStatus, orderCreated } = req.body;
   // if (!id) {
   //   res.status(401);
   //   next({
@@ -87,9 +87,9 @@ ordersRouter.patch("/:orderId", async (req, res, next) => {
       id: orderId,
       userId,
       productId,
-      productTitle,
       count,
       orderStatus,
+      orderCreated,
     });
     res.send(updatedOrder);
   } catch (error) {

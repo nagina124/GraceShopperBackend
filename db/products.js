@@ -52,14 +52,19 @@ async function createProduct({
   inventory,
   imageURL,
   splash,
+  platform,
+  publisher,
+  developer,
+  ageRating,
+  releaseDate,
 }) {
   try {
     const {
       rows: [product],
     } = await client.query(
       `
-      INSERT INTO products(category, title, "productURL", description, price, inventory, "imageURL", splash)
-      VALUES($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO products(category, title, "productURL", description, price, inventory, "imageURL", splash, platform, publisher, developer, "ageRating", "releaseDate")
+      VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       RETURNING *;
     `,
       [
@@ -71,6 +76,11 @@ async function createProduct({
         inventory,
         imageURL,
         splash,
+        platform,
+        publisher,
+        developer,
+        ageRating,
+        releaseDate,
       ]
     );
     return product;
@@ -89,6 +99,11 @@ async function updateProduct({
   inventory,
   imageURL,
   splash,
+  platform,
+  publisher,
+  developer,
+  ageRating,
+  releaseDate,
 }) {
   const fields = {
     category: category,
@@ -99,6 +114,11 @@ async function updateProduct({
     inventory: inventory,
     imageURL: imageURL,
     splash: splash,
+    platform: platform,
+    publisher: publisher,
+    developer: developer,
+    ageRating: ageRating,
+    releaseDate: releaseDate,
   };
 
   if (category === undefined || category === null) delete fields.category;
@@ -110,6 +130,12 @@ async function updateProduct({
   if (inventory === undefined || inventory === null) delete fields.inventory;
   if (imageURL === undefined || imageURL === null) delete fields.imageURL;
   if (splash === undefined || splash === null) delete fields.splash;
+  if (platform === undefined || platform === null) delete fields.platform;
+  if (publisher === undefined || publisher === null) delete fields.publisher;
+  if (developer === undefined || developer === null) delete fields.developer;
+  if (ageRating === undefined || ageRating === null) delete fields.ageRating;
+  if (releaseDate === undefined || releaseDate === null)
+    delete fields.releaseDate;
 
   const setString = Object.keys(fields)
     .map((key, index) => `"${key}"=$${index + 1}`)
@@ -132,6 +158,7 @@ async function updateProduct({
       `,
       Object.values(fields)
     );
+
     return products;
   } catch (error) {
     throw error;
@@ -140,7 +167,6 @@ async function updateProduct({
 
 async function deleteProduct(id) {
   try {
-
     await client.query(
       `
       DELETE FROM orders 
@@ -148,7 +174,7 @@ async function deleteProduct(id) {
       `,
       [id]
     );
-    
+
     const {
       rows: [product],
     } = await client.query(

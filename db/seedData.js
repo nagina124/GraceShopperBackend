@@ -33,21 +33,26 @@ async function createTables() {
             id SERIAL PRIMARY KEY,
             "productURL" VARCHAR(255) NOT NULL,
             category VARCHAR(255) NOT NULL,
-            title VARCHAR(255) UNIQUE NOT NULL,
+            title VARCHAR(255) NOT NULL,
             description TEXT NOT NULL,
             price FLOAT NOT NULL,
             inventory INTEGER,
             "imageURL" VARCHAR(255),
-            splash VARCHAR(255)
+            splash VARCHAR(255),
+            platform VARCHAR(255) NOT NULL,
+            publisher VARCHAR(255) NOT NULL,
+            developer VARCHAR(255) NOT NULL,
+            "ageRating" VARCHAR(255) NOT NULL,
+            "releaseDate" DATE NOT NULL
         );
 
         CREATE TABLE orders (
             id SERIAL PRIMARY KEY,
             "userId" INTEGER REFERENCES users(id),
             "productId" INTEGER REFERENCES products(id),
-            "productTitle" VARCHAR(255) REFERENCES products(title),
             count INTEGER NOT NULL, 
-            "orderStatus" VARCHAR(255) NOT NULL
+            "orderStatus" VARCHAR(255) NOT NULL,
+            "orderCreated" DATE NOT NULL
         );
         
         CREATE TABLE reviews (
@@ -123,6 +128,11 @@ async function createInitialProducts() {
           "https://www.mobygames.com/images/covers/l/630722-final-fantasy-vii-remake-playstation-4-front-cover.png",
         splash:
           "https://gamingbolt.com/wp-content/uploads/2020/02/Final-Fantasy-VII-Remake-Key-Vis_02-07-20_001l.jpg",
+        platform: "PlayStation 4",
+        publisher: "Square Enix, Inc.",
+        developer: "Square Enix Co., Ltd.",
+        ageRating: "Teen",
+        releaseDate: "2020-04-10",
       },
       {
         category: "ACTION-ADVENTURE",
@@ -136,6 +146,11 @@ async function createInitialProducts() {
           "https://www.mobygames.com/images/covers/l/667906-the-last-of-us-part-ii-playstation-4-front-cover.jpg",
         splash:
           "https://gamemusic.net/wp-content/uploads/2020/07/The-Last-of-Us-2-2.jpg",
+        platform: "PlayStation 4",
+        publisher: "Sony Interactive Entertainment America LLC",
+        developer: "Naughty Dog, Inc.",
+        ageRating: "Mature",
+        releaseDate: "2020-06-19",
       },
       {
         category: "RPG",
@@ -149,6 +164,11 @@ async function createInitialProducts() {
           "https://www.mobygames.com/images/covers/l/305108-the-witcher-3-wild-hunt-playstation-4-front-cover.jpg",
         splash:
           "https://www.wallpaperflare.com/static/206/494/530/the-witcher-3-wild-hunt-video-games-witcher-iii-wallpaper.jpg",
+        platform: "Xbox One",
+        publisher: "CD Projekt RED Sp. z o.o.",
+        developer: "CD Projekt RED Sp. z o.o.",
+        ageRating: "Mature",
+        releaseDate: "2015-05-18",
       },
       {
         category: "FIGHTING",
@@ -161,6 +181,11 @@ async function createInitialProducts() {
         imageURL:
           "https://www.mobygames.com/images/covers/l/646053-street-fighter-v-champion-edition-playstation-4-front-cover.jpg",
         splash: "https://nexushub.co.za/images/nexus/00009/9927_sfv_header.jpg",
+        platform: "PlayStation 4",
+        publisher: "Capcom Co., Ltd.",
+        developer: "Capcom Co., Ltd.",
+        ageRating: "Teen",
+        releaseDate: "2020-02-14",
       },
       {
         category: "HORROR",
@@ -172,6 +197,11 @@ async function createInitialProducts() {
         inventory: 20,
         imageURL: "https://wallpaperaccess.com/full/3837470.jpg",
         splash: "http://cdn.mos.cms.futurecdn.net/pZVMTWc7TgFYAosDjmUnPT.jpg",
+        platform: "PlayStation 5",
+        publisher: "Capcom U.S.A., Inc.",
+        developer: "Capcom Co., Ltd.",
+        ageRating: "Mature",
+        releaseDate: "2021-05-07",
       },
       {
         category: "SIMULATION",
@@ -185,6 +215,11 @@ async function createInitialProducts() {
           "https://www.mobygames.com/images/covers/l/578241-the-sims-4-playstation-4-front-cover.jpg",
         splash:
           "https://simscommunity.info/wp-content/uploads/2019/07/Screenshot-39.jpg",
+        platform: "Windows",
+        publisher: "Electronic Arts, Inc.",
+        developer: "The Sims Studio",
+        ageRating: "Teen",
+        releaseDate: "2014-09-02",
       },
       {
         category: "SIMULATION",
@@ -198,6 +233,11 @@ async function createInitialProducts() {
           "https://d.newsweek.com/en/full/1574934/animal-crossing-new-horizons-logo-box-art.jpg?w=1600&h=1600&q=88&f=03948221899c5b805c6b6f24140d0c1a",
         splash:
           "https://media.comicbook.com/2020/01/animal-crossing-1201472-1280x0.jpeg",
+        platform: "Nintendo Switch",
+        publisher: "Nintendo of America Inc.",
+        developer: "Nintendo EPD",
+        ageRating: "Everybody",
+        releaseDate: "2020-03-20",
       },
       {
         category: "ACTION-ADVENTURE",
@@ -211,6 +251,11 @@ async function createInitialProducts() {
           "https://i0.wp.com/multiversitystatic.s3.amazonaws.com/uploads/2020/11/Spider-Man-Miles-Morales-game-box-art.jpg?fit=1000%2C1000",
         splash:
           "https://assets1.ignimgs.com/thumbs/userUploaded/2020/7/9/newsvid-091918-00000817still235-1594320173842.jpg",
+        platform: "PlayStation 5",
+        publisher: "Sony Interactive Entertainment America LLC",
+        developer: "Insomniac Games, Inc.",
+        ageRating: "Teen",
+        releaseDate: "2020-11-12",
       },
       {
         category: "JRPG",
@@ -224,6 +269,11 @@ async function createInitialProducts() {
           "https://www.mobygames.com/images/covers/l/636447-persona-5-royal-playstation-4-front-cover.jpg",
         splash:
           "https://gamespot1.cbsistatic.com/uploads/original/172/1720905/3641283-competition_persona_header_1080.jpg",
+        platform: "PlayStation 4",
+        publisher: "SEGA of America, Inc.",
+        developer: "Atlus Co., Ltd.",
+        ageRating: "Mature",
+        releaseDate: "2020-03-31",
       },
       {
         category: "HACK-N-SLASH",
@@ -236,6 +286,11 @@ async function createInitialProducts() {
         imageURL: "https://i.imgur.com/2y0LUNa.jpg",
         splash:
           "https://cdn.vox-cdn.com/thumbor/_ieaiEynCl98YhvABCthnKIpO9Q=/0x0:1778x1000/1200x800/filters:focal(747x358:1031x642)/cdn.vox-cdn.com/uploads/chorus_image/image/63174241/DMC5_DeluxeEdition_KeyArt.0.jpg",
+        platform: "Xbox One",
+        publisher: "Capcom Co., Ltd.",
+        developer: "Capcom Co., Ltd.",
+        ageRating: "Mature",
+        releaseDate: "2019-03-08",
       },
       {
         category: "RPG",
@@ -248,6 +303,11 @@ async function createInitialProducts() {
         imageURL:
           "https://upload.wikimedia.org/wikipedia/en/2/2f/Yakuza_like_a_dragon_cover_art.jpg",
         splash: "https://i.redd.it/5rn2gq4d7fc51.png",
+        platform: "PlayStation 4",
+        publisher: "SEGA Corporation",
+        developer: "Ryu ga Gotoku Studio",
+        ageRating: "Mature",
+        releaseDate: "2020-01-16",
       },
     ];
 
@@ -267,6 +327,7 @@ async function createInitialOrders() {
   try {
     console.log("starting to create orders");
     const [cloud, zelda, mario, isabelle] = await getAllUsers();
+    console.log(cloud)
     const [
       finalFantasyVII,
       lastOfUsPartII,
@@ -285,79 +346,79 @@ async function createInitialOrders() {
       {
         userId: cloud.id,
         productId: finalFantasyVII.id,
-        productTitle: finalFantasyVII.title,
         count: 2,
         orderStatus: "created",
+        orderCreated: "2021-03-15",
       },
       {
         userId: zelda.id,
         productId: lastOfUsPartII.id,
-        productTitle: lastOfUsPartII.title,
         count: 1,
         orderStatus: "created",
+        orderCreated: "2021-03-16",
       },
       {
         userId: mario.id,
         productId: theWitcherIII.id,
-        productTitle: theWitcherIII.title,
         count: 3,
         orderStatus: "created",
+        orderCreated: "2021-03-16",
       },
       {
         userId: mario.id,
         productId: streetFighterV.id,
-        productTitle: streetFighterV.title,
         count: 1,
         orderStatus: "pending",
+        orderCreated: "2021-03-15",
       },
       {
         userId: cloud.id,
         productId: residentEvilVillage.id,
-        productTitle: residentEvilVillage.title,
         count: 2,
         orderStatus: "pending",
+        orderCreated: "2021-03-17",
       },
       {
         userId: cloud.id,
         productId: theSims4.id,
-        productTitle: theSims4.title,
         count: 4,
         orderStatus: "completed",
+        orderCreated: "2021-03-19",
       },
       {
         userId: cloud.id,
         productId: animalCrossingNewHorizons.id,
-        productTitle: animalCrossingNewHorizons.title,
         count: 1,
         orderStatus: "completed",
+        orderCreated: "2021-03-15",
       },
       {
         userId: mario.id,
         productId: spiderManMilesMorales.id,
-        productTitle: spiderManMilesMorales.title,
         count: 1,
         orderStatus: "canceled",
+        orderCreated: "2021-03-15",
       },
       {
         userId: zelda.id,
         productId: personaV.id,
-        productTitle: personaV.title,
         count: 3,
         orderStatus: "completed",
+        orderCreated: "2021-03-17",
       },
       {
         userId: zelda.id,
         productId: devilMayCry5.id,
-        productTitle: devilMayCry5.title,
         count: 1,
         orderStatus: "pending",
+        orderCreated: "2021-03-19",
       },
       {
         userId: isabelle.id,
         productId: yakuzaDragon.id,
-        productTitle: yakuzaDragon.title,
         count: 5,
         orderStatus: "created",
+        orderCreated: "2021-03-18",
       },
     ];
 
